@@ -92,7 +92,7 @@
 "Incoming audio call to %@ from %@ " = "從%2$@ 到%1$@的語音來電 ";
 "Incoming Call" = "來電";
 "Indicate when a particular device is active or inactive. Saves battery." = "當參與者的裝置啟用或不啟用時顯示。節省電力。";
-"Invalid Credentails" = "無效的證書";
+"Invalid Credentials" = "無效的證書";
 "Invalid username" = "無效的使用者名稱";
 "Jabber ID" = "Jabber ID";
 "Jabber, Openfire, Prosody etc.   " = "Jabber, Openfire, Prosody etc.   ";
