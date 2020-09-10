@@ -1,7 +1,7 @@
 /* Class = "UINavigationItem"; title = "Root View Controller"; ObjectID = "1Hw-bc-mNT"; */
 "1Hw-bc-mNT.title" = "Root View Controller";
 /* Class = "UIBarButtonItem"; title = "Close"; ObjectID = "2FM-6l-v8h"; */
-"2FM-6l-v8h.title" = "închide";
+"2FM-6l-v8h.title" = "Close";
 /* Class = "UITableViewController"; title = "Chat Log"; ObjectID = "3gZ-1D-g86"; */
 "3gZ-1D-g86.title" = "Jurnalele de discuții";
 /* Class = "UINavigationItem"; title = "Display Settings"; ObjectID = "bRa-lQ-kQr"; */
@@ -18,10 +18,6 @@
 "IVO-3g-xoO.accessibilityHint" = "UDP Log Port";
 /* Class = "UITextField"; placeholder = "Port of Logserver"; ObjectID = "IVO-3g-xoO"; */
 "IVO-3g-xoO.placeholder" = "Port of Logserver";
-/* Class = "UILabel"; text = "Title"; ObjectID = "ivZ-8c-o6a"; */
-"ivZ-8c-o6a.text" = "Titlu";
-/* Class = "UITextView"; text = "log_placeholder"; ObjectID = "JYm-gw-Mhc"; */
-"JYm-gw-Mhc.text" = "log_placeholder";
 /* Class = "UITableViewController"; title = "Settings"; ObjectID = "kjF-U7-P8y"; */
 "kjF-U7-P8y.title" = "Setări";
 /* Class = "UINavigationItem"; title = "Root View Controller"; ObjectID = "mLa-XU-o1Q"; */
@@ -30,8 +26,6 @@
 "nPR-ET-sg3.title" = "Notificări";
 /* Class = "UINavigationItem"; title = "Account Edit"; ObjectID = "pa7-vQ-Yz3"; */
 "pa7-vQ-Yz3.title" = "Editare cont";
-/* Class = "UILabel"; text = "Detail"; ObjectID = "QNX-n9-Hbx"; */
-"QNX-n9-Hbx.text" = "Detaliu";
 /* Class = "UIBarButtonItem"; title = "Close"; ObjectID = "QTE-cG-3LC"; */
 "QTE-cG-3LC.title" = "Închide";
 /* Class = "UIBarButtonItem"; title = "Close"; ObjectID = "R3T-hy-2aY"; */
@@ -40,8 +34,6 @@
 "r7s-58-k2m.title" = "Reconectare toate";
 /* Class = "UILabel"; text = "Detail"; ObjectID = "rF7-34-0sc"; */
 "rF7-34-0sc.text" = "Detaliu";
-/* Class = "UILabel"; text = "Title"; ObjectID = "rLQ-yk-GnZ"; */
-"rLQ-yk-GnZ.text" = "Titlu";
 /* Class = "UINavigationItem"; title = "Sounds"; ObjectID = "Rum-Ee-xSZ"; */
 "Rum-Ee-xSZ.title" = "Sunete";
 /* Class = "UIBarButtonItem"; title = "Save"; ObjectID = "TJt-Kl-UDV"; */
@@ -58,6 +50,5 @@
 "YtW-zK-Qze.title" = "Setări";
 /* Class = "UITextField"; accessibilityHint = "UDP Log Hostname"; ObjectID = "ZMn-v1-NOh"; */
 "ZMn-v1-NOh.accessibilityHint" = "UDP Log Hostname";
-
 /* Class = "UITextField"; placeholder = "Hostname/IP of Logserver"; ObjectID = "ZMn-v1-NOh"; */
 "ZMn-v1-NOh.placeholder" = "Hostname/IP of Logserver";
