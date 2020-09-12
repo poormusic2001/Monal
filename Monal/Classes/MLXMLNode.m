@@ -51,22 +51,26 @@
     return self;
 }
 
++(BOOL) supportsSecureCoding
+{
+    return YES;
+}
 
--(id) initWithCoder:(NSCoder*)decoder
+-(id) initWithCoder:(NSCoder*) decoder
 {
     self = [super init];
     if(!self)
         return nil;
 
-    _element = [decoder decodeObjectForKey:@"element"];
-    _attributes = [decoder decodeObjectForKey:@"attributes"];
-    _children = [decoder decodeObjectForKey:@"children"];
-    _data = [decoder decodeObjectForKey:@"data"];
+    _element = [decoder decodeObjectOfClass:[NSString class] forKey:@"element"];
+    _attributes = [decoder decodeObjectOfClass:[NSMutableDictionary class] forKey:@"attributes"];
+    _children = [decoder decodeObjectOfClass:[NSMutableArray class] forKey:@"children"];
+    _data = [decoder decodeObjectOfClass:[NSString class] forKey:@"data"];
 
     return self;
 }
 
--(void) encodeWithCoder:(NSCoder*)encoder
+-(void) encodeWithCoder:(NSCoder*) encoder
 {
     [encoder encodeObject:_element forKey:@"element"];
     [encoder encodeObject:_attributes forKey:@"attributes"];
