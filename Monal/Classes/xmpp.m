@@ -1172,7 +1172,7 @@ NSString *const kXMPPPresence = @"presence";
         {
             if([iqNode.type isEqualToString:kiqErrorType]) {
                 //there are no devices published yet
-                [self.omemo sendOMEMODevice];
+                [self.omemo sendOMEMODeviceWithForce:NO];
             }
         }
 #endif
@@ -1807,7 +1807,6 @@ NSString *const kXMPPPresence = @"presence";
     [messageNode setXmppId:messageId ];
 
 #ifndef DISABLE_OMEMO
-    // [encryptMessage:messageNode withMessage:message isMuc:isMuc toContact:contact fromSender:self.connectionProperties.identity.jid]
     if(encrypt && !isMUC) {
         [self.omemo encryptMessage:messageNode withMessage:message toContact:contact];
     } else {
@@ -2198,6 +2197,12 @@ NSString *const kXMPPPresence = @"presence";
     [self sendCurrentCSIState];
     
     //mam query will be done in MLIQProcessor once the disco result returns
+#ifndef DISABLE_OMEMO
+    // omemo
+    [self.omemo queryOMEMODevicesFrom:self.connectionProperties.identity.jid];
+    [self.omemo subscribeOMEMODevicesFrom:self.connectionProperties.identity.jid];
+    [self.omemo sendOMEMOBundle];
+#endif
 }
 
 -(void) setStatusMessageText:(NSString*) message
