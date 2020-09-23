@@ -2144,7 +2144,6 @@ NSString *const kXMPPPresence = @"presence";
 #ifndef DISABLE_OMEMO
     // omemo
     [self.omemo queryOMEMODevicesFrom:self.connectionProperties.identity.jid];
-    [self.omemo subscribeOMEMODevicesFrom:self.connectionProperties.identity.jid];
     [self.omemo sendOMEMOBundle];
 #endif
 }
