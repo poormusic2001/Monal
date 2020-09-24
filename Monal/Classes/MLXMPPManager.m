@@ -7,13 +7,11 @@
 //
 
 #import <BackgroundTasks/BackgroundTasks.h>
+#import <UserNotifications/UserNotifications.h>
 
 #import "MLXMPPManager.h"
 #import "DataLayer.h"
-
-#import "MLMessageProcessor.h"
-#import "ParseMessage.h"
-
+#import "HelperTools.h"
 #import "MonalAppDelegate.h"
 
 @import Network;
@@ -254,14 +252,7 @@ static const int sendMessageTimeoutSeconds = 10;
 -(void) nowIdle:(NSNotification*) notification
 {
     DDLogVerbose(@"### SOME ACCOUNT CHANGED TO IDLE STATE ###");
-    [DDLog flushLog];
-    if(![HelperTools isAppExtension])
-    {
-        DDLogVerbose(@"### NOT EXTENSION --> checking if background is still needed ###");
-        [self checkIfBackgroundTaskIsStillNeeded];
-    }
-    else
-        DDLogVerbose(@"### IN EXTENSION --> ignoring in MLXMPPManager ###");
+    [self checkIfBackgroundTaskIsStillNeeded];
 }
 
 -(BOOL) allAccountsIdle
@@ -274,47 +265,56 @@ static const int sendMessageTimeoutSeconds = 10;
 
 -(void) checkIfBackgroundTaskIsStillNeeded
 {
-    if(![HelperTools isAppExtension] && [self allAccountsIdle])
+    if([self allAccountsIdle])
     {
-        BOOL background = [HelperTools isInBackground];
-        if(background)
+        //remove syncError notification because all accounts are idle and fully synced now
+        [[UNUserNotificationCenter currentNotificationCenter] removeDeliveredNotificationsWithIdentifiers:@[@"syncError"]];
+        
+        if(![HelperTools isAppExtension])
         {
-            DDLogInfo(@"### All accounts idle, disconnecting and stopping all background tasks ###");
-            [DDLog flushLog];
-            [self disconnectAll];       //disconnect all accounts to prevent TCP buffer leaking
-            [HelperTools dispatchSyncReentrant:^{
-                BOOL stopped = NO;
-                if(_bgTask != UIBackgroundTaskInvalid)
-                {
-                    DDLogVerbose(@"stopping UIKit _bgTask");
-                    [DDLog flushLog];
-                    [[UIApplication sharedApplication] endBackgroundTask:_bgTask];
-                    _bgTask = UIBackgroundTaskInvalid;
-                    stopped = YES;
-                }
-                if(_bgFetch)
-                {
-                    DDLogVerbose(@"stopping backgroundFetchingTask");
-                    [DDLog flushLog];
-                    [_bgFetch setTaskCompletedWithSuccess:YES];
-                    stopped = YES;
-                }
-                if(!stopped)
-                    DDLogVerbose(@"no background tasks running, nothing to stop");
+            DDLogVerbose(@"### NOT EXTENSION --> checking if background is still needed ###");
+            BOOL background = [HelperTools isInBackground];
+            if(background)
+            {
+                DDLogInfo(@"### All accounts idle, disconnecting and stopping all background tasks ###");
                 [DDLog flushLog];
-            } onQueue:dispatch_get_main_queue()];
+                [self disconnectAll];       //disconnect all accounts to prevent TCP buffer leaking
+                [HelperTools dispatchSyncReentrant:^{
+                    BOOL stopped = NO;
+                    if(_bgTask != UIBackgroundTaskInvalid)
+                    {
+                        DDLogVerbose(@"stopping UIKit _bgTask");
+                        [DDLog flushLog];
+                        [[UIApplication sharedApplication] endBackgroundTask:_bgTask];
+                        _bgTask = UIBackgroundTaskInvalid;
+                        stopped = YES;
+                    }
+                    if(_bgFetch)
+                    {
+                        DDLogVerbose(@"stopping backgroundFetchingTask");
+                        [DDLog flushLog];
+                        [_bgFetch setTaskCompletedWithSuccess:YES];
+                        stopped = YES;
+                    }
+                    if(!stopped)
+                        DDLogVerbose(@"no background tasks running, nothing to stop");
+                    [DDLog flushLog];
+                } onQueue:dispatch_get_main_queue()];
+            }
+            if(_pushCompletion)
+            {
+                DDLogInfo(@"### All accounts idle, calling push completion handler ###");
+                [DDLog flushLog];
+                if(_cancelPushTimer)
+                    _cancelPushTimer();
+                //we don't need to call disconnectAll if we are in background here, because we already did this in the if above (don't reorder these 2 ifs!)
+                _pushCompletion(UIBackgroundFetchResultNewData);
+                _pushCompletion = nil;
+                _cancelPushTimer = nil;
+            }
         }
-        if(_pushCompletion)
-        {
-            DDLogInfo(@"### All accounts idle, calling push completion handler ###");
-            [DDLog flushLog];
-            if(_cancelPushTimer)
-                _cancelPushTimer();
-            //we don't need to call disconnectAll if we are in background here, because we already did this in the if above (don't reorder these 2 ifs!)
-            _pushCompletion(UIBackgroundFetchResultNewData);
-            _pushCompletion = nil;
-            _cancelPushTimer = nil;
-        }
+        else
+            DDLogVerbose(@"### IN EXTENSION --> ignoring in MLXMPPManager ###");
     }
 }
 
@@ -329,8 +329,10 @@ static const int sendMessageTimeoutSeconds = 10;
                 _bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^(void) {
                     DDLogWarn(@"BG WAKE EXPIRING");
                     [DDLog flushLog];
-
+                    
                     [self disconnectAll];       //disconnect all accounts to prevent TCP buffer leaking
+                    
+                    [HelperTools postSendingErrorNotification];
 
                     //schedule a BGProcessingTaskRequest to process this further as soon as possible
                     if(@available(iOS 13.0, *))
@@ -353,12 +355,13 @@ static const int sendMessageTimeoutSeconds = 10;
     DDLogVerbose(@"RUNNING BGTASK");
     _bgFetch = task;
     task.expirationHandler = ^{
-        DDLogError(@"*** BGTASK EXPIRED ***");
+        DDLogWarn(@"*** BGTASK EXPIRED ***");
         [self disconnectAll];       //disconnect all accounts to prevent TCP buffer leaking
         _bgFetch = nil;
         [task setTaskCompletedWithSuccess:NO];
         [self scheduleBackgroundFetchingTask];      //schedule new one if neccessary
         [DDLog flushLog];
+        [HelperTools postSendingErrorNotification];
     };
     
     if(_hasConnectivity)
@@ -371,7 +374,7 @@ static const int sendMessageTimeoutSeconds = 10;
         }
     }
     else
-        DDLogVerbose(@"BGTASK has *no* connectivity? That's strange!");
+        DDLogWarn(@"BGTASK has *no* connectivity? That's strange!");
     
     //log bgtask ticks
     unsigned long tick = 0;

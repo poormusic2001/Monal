@@ -11,6 +11,8 @@
 #import "HelperTools.h"
 #import "MLUDPLogger.h"
 
+@import UserNotifications;
+
 @implementation HelperTools
 
 void logException(NSException* exception)
@@ -21,11 +23,18 @@ void logException(NSException* exception)
     usleep(1000000);
 }
 
-+(BOOL) xml2bool:(NSString*) xml
+-(void) postSendingErrorNotification
 {
-    if(xml && ([xml isEqualToString:@"1"] || [xml isEqualToString:@"true"]))
-        return YES;
-    return NO;
+    UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
+    content.title = NSLocalizedString(@"Could not synchronize", @"");
+    content.body = NSLocalizedString(@"Please open the app to retry", @"");
+    content.sound = [UNNotificationSound defaultSound];
+    UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+    UNNotificationRequest* request = [UNNotificationRequest requestWithIdentifier:@"syncError" content:content trigger:nil];
+    [center addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+        if(error)
+            DDLogError(@"Error posting syncError notification: %@", error);
+    }];
 }
 
 +(NSString*) sha256HmacForKey: (NSString*) key andData: (NSString*) data
