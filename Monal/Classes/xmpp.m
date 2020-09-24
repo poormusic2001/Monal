@@ -1900,6 +1900,7 @@ NSString *const kXMPPPresence = @"presence";
     [values setObject:[NSNumber numberWithBool:_loggedInOnce] forKey:@"loggedInOnce"];
     [values setObject:[NSNumber numberWithBool:self.connectionProperties.usingCarbons2] forKey:@"usingCarbons2"];
     [values setObject:[NSNumber numberWithBool:self.connectionProperties.supportsPush] forKey:@"supportsPush"];
+    [values setObject:[NSNumber numberWithBool:self.connectionProperties.pushEnabled] forKey:@"pushEnabled"];
     [values setObject:[NSNumber numberWithBool:self.connectionProperties.supportsClientState] forKey:@"supportsClientState"];
     [values setObject:[NSNumber numberWithBool:self.connectionProperties.supportsMam2] forKey:@"supportsMAM"];
     [values setObject:[NSNumber numberWithBool:self.connectionProperties.supportsPubSub] forKey:@"supportsPubSub"];
@@ -2008,7 +2009,7 @@ NSString *const kXMPPPresence = @"presence";
             NSNumber* loggedInOnce = [dic objectForKey:@"loggedInOnce"];
             _loggedInOnce = loggedInOnce.boolValue;
         }
-        
+
         if([dic objectForKey:@"usingCarbons2"])
         {
             NSNumber* carbonsNumber = [dic objectForKey:@"usingCarbons2"];
@@ -2019,6 +2020,12 @@ NSString *const kXMPPPresence = @"presence";
         {
             NSNumber* pushNumber = [dic objectForKey:@"supportsPush"];
             self.connectionProperties.supportsPush = pushNumber.boolValue;
+        }
+
+        if([dic objectForKey:@"pushEnabled"])
+        {
+            NSNumber* pushEnabled = [dic objectForKey:@"pushEnabled"];
+            self.connectionProperties.pushEnabled = pushEnabled.boolValue;
         }
 
         if([dic objectForKey:@"supportsClientState"])
