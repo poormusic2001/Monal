@@ -2303,7 +2303,7 @@ NSString *const kXMPPPresence = @"presence";
 
 -(BOOL) isHibernated
 {
-    BOOL hibernated = (_accountState < kStateBound);
+    BOOL hibernated = (_accountState < kStateReconnecting);
     hibernated &= (_streamID != nil);
     return hibernated;
 }
