@@ -26,7 +26,6 @@ void logException(NSException* exception);
 +(BOOL) isAppExtension;
 +(NSString*) generateStringOfFeatureSet:(NSSet*) features;
 +(NSSet*) getOwnFeatureSet;
-+(NSString*) getOwnCapsHash;
 +(NSString*) getEntityCapsHashForIdentities:(NSArray*) identities andFeatures:(NSSet*) features;
 +(NSString* _Nullable) formatLastInteraction:(NSDate*) lastInteraction;
 +(NSDate*) parseDateTimeString:(NSString*) datetime;
