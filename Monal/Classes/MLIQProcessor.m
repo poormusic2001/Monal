@@ -417,10 +417,10 @@
     if(!iqPlatformOS)
         iqPlatformOS = @"";
     
-    NSArray *versionDBInfoArr = [[DataLayer sharedInstance] softwareVersionInfoForAccount:account.accountNo andContact:iqNode.fromUser];
+    NSArray *versionDBInfoArr = [[DataLayer sharedInstance] softwareVersionInfoForAccount:account.accountNo contact:iqNode.fromUser andResource:iqNode.fromResource];
     
     if ((versionDBInfoArr != nil) && ([versionDBInfoArr count] > 0)) {
-        NSDictionary *versionInfoDBDic = versionDBInfoArr[0];
+        NSDictionary *versionInfoDBDic = versionDBInfoArr[0];        
         
         if (!([[versionInfoDBDic objectForKey:@"platform_App_Name"] isEqualToString:iqAppName] &&
             [[versionInfoDBDic objectForKey:@"platform_App_Version"] isEqualToString:iqAppVersion] &&
@@ -430,13 +430,15 @@
                                                              appVersion:iqAppVersion
                                                              platformOS:iqPlatformOS
                                                             withAccount:account.accountNo
-                                                             andContact:iqNode.fromUser];
+                                                                contact:iqNode.fromUser
+                                                            andResource:iqNode.fromResource];
             
             [[NSNotificationCenter defaultCenter] postNotificationName:kMonalXmppUserSoftWareVersionRefresh
                                                                 object:account
-                                                              userInfo:@{@"platform_App_Name":iqAppName,
-                                                                      @"platform_App_Version":iqAppVersion,
-                                                                               @"platform_OS":iqPlatformOS}];
+                                                              userInfo:@{iqNode.fromResource:@{
+                                                                                 @"platform_App_Name":iqAppName,
+                                                                                 @"platform_App_Version":iqAppVersion,
+                                                                                 @"platform_OS":iqPlatformOS}}];
         }
     }
 }

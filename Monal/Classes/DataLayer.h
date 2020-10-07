@@ -61,8 +61,8 @@ extern NSString *const kMessageTypeUrl;
 
 -(NSMutableArray*) onlineContactsSortedBy:(NSString*) sort;
 -(NSArray*) resourcesForContact:(NSString*)contact ;
--(NSArray*) softwareVersionInfoForAccount:(NSString*)account andContact:(NSString*)contact;
--(void) setSoftwareVersionInfoForAppName:(NSString*)appName appVersion:(NSString*)appVersion platformOS:(NSString*)platformOS withAccount:(NSString*)account andContact:(NSString*)contact;
+-(NSArray*) softwareVersionInfoForAccount:(NSString*)account contact:(NSString*)contact andResource:(NSString*)resource;
+-(void) setSoftwareVersionInfoForAppName:(NSString*)appName appVersion:(NSString*)appVersion platformOS:(NSString*)platformOS withAccount:(NSString*)account contact:(NSString*)contact andResource:(NSString*)resource;
 -(NSMutableArray*) offlineContacts;
 
 #pragma mark Ver string and Capabilities
