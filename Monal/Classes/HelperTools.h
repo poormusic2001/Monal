@@ -15,6 +15,7 @@ void logException(NSException* exception);
 
 @interface HelperTools : NSObject
 
++(void) configureFileProtectionFor:(NSString*) file;
 +(NSDictionary*) splitJid:(NSString*) jid;
 +(void) postSendingErrorNotification;
 +(NSString*) sha256HmacForKey: (NSString*) key andData: (NSString*) data;
