@@ -289,9 +289,9 @@
 "Jabber, Prosody, ejabberd etc.   " = "Jabber, Prosody, ejabberd usw.   ";
 "Pin Chat" = "Pin Chat";
 "Read" = "Read";
-"Received" = "Received";
+"Received" = "Empfangen";
 "Sending..." = "Sending...";
-"Sent" = "Sent";
+"Sent" = "Gesendet";
 "Skip" = "Skip";
 "Unpin Chat" = "Unpin Chat";
 "Last seen: %@" = "Last seen: %@";
