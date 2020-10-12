@@ -804,7 +804,7 @@ static const int pingFreqencyMinutes = 5;       //about the same Conversations u
      [account addToRoster:contact.contactJid];
 }
 
--(void) getEntitySoftWareVersion:(MLContact *) contact andResource:(NSString*) resource
+-(void) getEntitySoftWareVersionForContact:(MLContact *) contact andResource:(NSString*) resource
 {
     xmpp* account =[self getConnectedAccountForID:contact.accountId];
     

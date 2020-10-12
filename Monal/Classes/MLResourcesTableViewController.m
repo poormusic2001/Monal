@@ -92,26 +92,29 @@
     else
     {
         NSString* resourceTitle = [[self.resources objectAtIndex:indexPath.section] objectForKey:@"resource"];
-        NSDictionary* versionDataDictionary = [self.versionInfoDic objectForKey:resourceTitle];
-        
-        switch (indexPath.row) {
-            case 0:
-                cell.textLabel.text = [NSString stringWithFormat:@"%@%@",
-                                          NSLocalizedString(@"Name: ",@""),
-                                          (versionDataDictionary[@"platform_App_Name"] == nil) ? @"":versionDataDictionary[@"platform_App_Name"]];
-                break;
-            case 1:
-                cell.textLabel.text = [NSString stringWithFormat:@"%@%@",
-                                          NSLocalizedString(@"Os: ",@""),
-                                          (versionDataDictionary[@"platform_OS"] == nil) ? @"":versionDataDictionary[@"platform_OS"]];
-                break;
-            case 2:
-                cell.textLabel.text = [NSString stringWithFormat:@"%@%@",
-                                          NSLocalizedString(@"Version: ",@""),
-                                          (versionDataDictionary[@"platform_App_Version"] == nil) ? @"":versionDataDictionary[@"platform_App_Version"]];
-                break;
-            default:
-                break;
+        if (resourceTitle)
+        {
+            NSDictionary* versionDataDictionary = [self.versionInfoDic objectForKey:resourceTitle];
+            
+            switch (indexPath.row) {
+                case 0:
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@%@",
+                                              NSLocalizedString(@"Name: ",@""),
+                                              (versionDataDictionary[@"platform_App_Name"] == nil) ? @"":versionDataDictionary[@"platform_App_Name"]];
+                    break;
+                case 1:
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@%@",
+                                              NSLocalizedString(@"Os: ",@""),
+                                              (versionDataDictionary[@"platform_OS"] == nil) ? @"":versionDataDictionary[@"platform_OS"]];
+                    break;
+                case 2:
+                    cell.textLabel.text = [NSString stringWithFormat:@"%@%@",
+                                              NSLocalizedString(@"Version: ",@""),
+                                              (versionDataDictionary[@"platform_App_Version"] == nil) ? @"":versionDataDictionary[@"platform_App_Version"]];
+                    break;
+                default:
+                    break;
+            }
         }
     }
     
@@ -125,7 +128,7 @@
     for (NSDictionary* resourceDic in self.resources)
     {
         NSString* resourceTitle = [resourceDic objectForKey:@"resource"];
-        [[MLXMPPManager sharedInstance] getEntitySoftWareVersion:self.contact andResource:resourceTitle];
+        [[MLXMPPManager sharedInstance] getEntitySoftWareVersionForContact:self.contact andResource:resourceTitle];
     }
 }
 
@@ -133,17 +136,18 @@
 -(void) refreshSoftwareVersion:(NSNotification*) verNotification
 {
     if (verNotification) {
-        NSDictionary* inVerDictionary = [verNotification.userInfo mutableCopy];
-        for (NSString* resourceKey in [inVerDictionary allKeys])
+        NSMutableDictionary* inVerDictionary = [verNotification.userInfo mutableCopy];
+        NSString* resourceKey = [inVerDictionary objectForKey:@"fromResource"];
+        if (resourceKey)
         {
-            NSDictionary* inVerValueDictionary = [inVerDictionary objectForKey:resourceKey];
-            [self.versionInfoDic setObject:inVerValueDictionary forKey:resourceKey];
+            [inVerDictionary removeObjectForKey:@"fromResource"];
+            [self.versionInfoDic setObject:inVerDictionary forKey:resourceKey];
         }
     } else {
         for (NSDictionary* resourceDic in self.resources)
         {
             NSString* resourceTitle = [resourceDic objectForKey:@"resource"];
-            NSArray* versionDBInfoArr = [[DataLayer sharedInstance] softwareVersionInfoForAccount:self.contact.accountId contact:self.contact.contactJid andResource:resourceTitle];
+            NSArray* versionDBInfoArr = [[DataLayer sharedInstance] getSoftwareVersionInfoForContact:self.contact.contactJid resource:resourceTitle andAccount:self.contact.accountId];
             
             if(versionDBInfoArr && [versionDBInfoArr count] >= 1) {
                 [self.versionInfoDic setObject:versionDBInfoArr[0] forKey:resourceTitle];

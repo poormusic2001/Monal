@@ -628,7 +628,7 @@ static NSDateFormatter* dbFormatter;
     return resources;
 }
 
--(NSArray*) softwareVersionInfoForAccount:(NSString*)account contact:(NSString*)contact andResource:(NSString*)resource
+-(NSArray*) getSoftwareVersionInfoForContact:(NSString*)contact resource:(NSString*)resource andAccount:(NSString*)account
 {
     if(!account) return nil;
     NSString* query1 = [NSString stringWithFormat:@"select platform_App_Name, platform_App_Version, platform_OS from buddy_resources where buddy_id in (select buddy_id from buddylist where account_id=? and buddy_name=?) and resource=?"];
@@ -637,12 +637,12 @@ static NSDateFormatter* dbFormatter;
     return resources;
 }
 
--(void) setSoftwareVersionInfoForAppName:(NSString*)appName
-                      appVersion:(NSString*)appVersion
-                      platformOS:(NSString*)platformOS
-                     withAccount:(NSString*)account
-                         contact:(NSString*)contact
-                     andResource:(NSString*)resource
+-(void) setSoftwareVersionInfoForContact:(NSString*)contact
+                                resource:(NSString*)resource
+                              andAccount:(NSString*)account
+                             withAppName:(NSString*)appName
+                              appVersion:(NSString*)appVersion
+                           andPlatformOS:(NSString*)platformOS
 {
     NSString* query = [NSString stringWithFormat:@"update buddy_resources set platform_App_Name=?, platform_App_Version=?, platform_OS=? where buddy_id in (select buddy_id from buddylist where account_id=? and buddy_name=?) and resource=?"];
     NSArray* params = @[appName, appVersion, platformOS, account, contact, resource];

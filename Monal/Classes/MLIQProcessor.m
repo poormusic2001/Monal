@@ -417,7 +417,7 @@
     if(!iqPlatformOS)
         iqPlatformOS = @"";
     
-    NSArray *versionDBInfoArr = [[DataLayer sharedInstance] softwareVersionInfoForAccount:account.accountNo contact:iqNode.fromUser andResource:iqNode.fromResource];
+    NSArray *versionDBInfoArr = [[DataLayer sharedInstance] getSoftwareVersionInfoForContact:iqNode.fromUser resource:iqNode.fromResource andAccount:account.accountNo];
     
     if ((versionDBInfoArr != nil) && ([versionDBInfoArr count] > 0)) {
         NSDictionary *versionInfoDBDic = versionDBInfoArr[0];        
@@ -426,19 +426,19 @@
             [[versionInfoDBDic objectForKey:@"platform_App_Version"] isEqualToString:iqAppVersion] &&
             [[versionInfoDBDic objectForKey:@"platform_OS"] isEqualToString:iqPlatformOS]))
         {
-            [[DataLayer sharedInstance] setSoftwareVersionInfoForAppName:iqAppName
-                                                             appVersion:iqAppVersion
-                                                             platformOS:iqPlatformOS
-                                                            withAccount:account.accountNo
-                                                                contact:iqNode.fromUser
-                                                            andResource:iqNode.fromResource];
+            [[DataLayer sharedInstance] setSoftwareVersionInfoForContact:iqNode.fromUser
+                                                                resource:iqNode.fromResource
+                                                              andAccount:account.accountNo
+                                                             withAppName:iqAppName
+                                                              appVersion:iqAppVersion
+                                                           andPlatformOS:iqPlatformOS];
             
             [[NSNotificationCenter defaultCenter] postNotificationName:kMonalXmppUserSoftWareVersionRefresh
                                                                 object:account
-                                                              userInfo:@{iqNode.fromResource:@{
-                                                                                 @"platform_App_Name":iqAppName,
-                                                                                 @"platform_App_Version":iqAppVersion,
-                                                                                 @"platform_OS":iqPlatformOS}}];
+                                                              userInfo:@{@"platform_App_Name":iqAppName,
+                                                                         @"platform_App_Version":iqAppVersion,
+                                                                         @"platform_OS":iqPlatformOS,
+                                                                         @"fromResource":iqNode.fromResource}];
         }
     }
 }
