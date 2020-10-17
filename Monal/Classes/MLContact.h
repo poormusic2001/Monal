@@ -20,6 +20,8 @@ FOUNDATION_EXPORT NSString* const kAskSubscribe;
 
 @interface MLContact : NSObject <NSCoding>
 
++(NSString*) ownDisplayNameForAccountNo:(NSNumber*) accountNo andOwnJid:(NSString*)jid;
+
 +(MLContact*) contactFromDictionary:(NSDictionary*) dic;
 +(MLContact*) contactFromDictionary:(NSDictionary*) dic withDateFormatter:(NSDateFormatter*) formatter;
 
