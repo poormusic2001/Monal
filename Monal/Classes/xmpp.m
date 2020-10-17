@@ -3361,11 +3361,11 @@ NSString *const kXMPPPresence = @"presence";
     if(!rosterName || !rosterName.length)
         [self.pubsub deleteNode:@"http://jabber.org/protocol/nick"];
     else
-        [self.pubsub publishItems:@[
-            [[MLXMLNode alloc] initWithElement:@"item" withAttributes:@{} andChildren:@[
+        [self.pubsub publishItem:
+            [[MLXMLNode alloc] initWithElement:@"item" withAttributes:@{@"id": @"current"} andChildren:@[
                 [[MLXMLNode alloc] initWithElement:@"nick" andNamespace:@"http://jabber.org/protocol/nick" withAttributes:@{} andChildren:@[] andData:rosterName]
             ] andData:nil]
-        ] onNode:@"http://jabber.org/protocol/nick" withAccessModel:@"presence"];
+        onNode:@"http://jabber.org/protocol/nick" withAccessModel:@"presence"];
 }
 
 @end
