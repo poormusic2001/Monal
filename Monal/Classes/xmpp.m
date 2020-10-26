@@ -3361,6 +3361,20 @@ NSString *const kXMPPPresence = @"presence";
         }];
 }
 
+-(NSData*) resizeAvatarImage:(UIImage*) image
+{
+    NSData* data;
+    unsigned long limit = 60000;        //conversations made some experiments what size works on almost all servers and this is the outcome
+    CGFloat quality = 0.75;             //start here
+    do
+    {
+        data = UIImageJPEGRepresentation(image, quality);
+        if(data.length > limit)
+            quality /= 1.5;
+    } while(data.length > limit && quality > 0.01);
+    return data;
+}
+
 -(void) publishAvatar:(UIImage*) image
 {
     if(!image)
@@ -3371,19 +3385,19 @@ NSString *const kXMPPPresence = @"presence";
     }
     else
     {
-        NSString* width = [NSString stringWithFormat:@"%lu", (unsigned long)(image.size.width * image.scale)];
-        NSString* height = [NSString stringWithFormat:@"%lu", (unsigned long)(image.size.height * image.scale)];
-        NSData* imageData = UIImagePNGRepresentation(image);
+        NSString* width = [NSString stringWithFormat:@"%lu", (unsigned long)(image.size.width)];
+        NSString* height = [NSString stringWithFormat:@"%lu", (unsigned long)(image.size.height)];
+        NSData* imageData = [self resizeAvatarImage:image];
         NSString* imageHash = [HelperTools hexadecimalString:[HelperTools sha1:imageData]];
         
-        DDLogInfo(@"Publishing own avatar image with hash %@", imageHash);
+        DDLogInfo(@"Publishing own avatar image(%@x%@) with hash %@", width, height, imageHash);
         
         //publish data node (must be done *before* publishing the new metadata node)
-        [self.pubsub publishItem:
-            [[MLXMLNode alloc] initWithElement:@"item" withAttributes:@{@"id": imageHash} andChildren:@[
-                [[MLXMLNode alloc] initWithElement:@"data" andNamespace:@"urn:xmpp:avatar:data" withAttributes:@{} andChildren:@[] andData:[HelperTools encodeBase64WithData:imageData]]
-            ] andData:nil]
-        onNode:@"urn:xmpp:avatar:data" withConfigOptions:@{
+        MLXMLNode* item = [[MLXMLNode alloc] initWithElement:@"item" withAttributes:@{@"id": imageHash} andChildren:@[
+            [[MLXMLNode alloc] initWithElement:@"data" andNamespace:@"urn:xmpp:avatar:data" withAttributes:@{} andChildren:@[] andData:[HelperTools encodeBase64WithData:imageData]]
+        ] andData:nil];
+        
+        [self.pubsub publishItem:item onNode:@"urn:xmpp:avatar:data" withConfigOptions:@{
             @"pubsub#persist_items": @"true",
             @"pubsub#access_model": @"presence"
         }];
