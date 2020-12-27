@@ -717,6 +717,9 @@ static NSString* kBackgroundFetchingTask = @"im.monal.fetch";
 
 -(void) addBackgroundTask
 {
+#if TARGET_OS_MACCATALYST
+    DDLogInfo(@"### CATALYST BUILD --> ignoring addBackgroundTask in MonalAppDelegate ###");
+#else
     dispatch_async(dispatch_get_main_queue(), ^{
         if(_bgTask == UIBackgroundTaskInvalid)
         {
@@ -742,6 +745,7 @@ static NSString* kBackgroundFetchingTask = @"im.monal.fetch";
             }];
         }
     });
+#endif
 }
 
 -(void) handleBackgroundFetchingTask:(BGTask*) task API_AVAILABLE(ios(13.0))
@@ -803,6 +807,9 @@ static NSString* kBackgroundFetchingTask = @"im.monal.fetch";
 
 -(void) scheduleBackgroundFetchingTask
 {
+#if TARGET_OS_MACCATALYST
+    DDLogInfo(@"### CATALYST BUILD --> ignoring scheduleBackgroundFetchingTask in MonalAppDelegate ###");
+#else
     if(@available(iOS 13.0, *))
     {
         [HelperTools dispatchSyncReentrant:^{
@@ -831,6 +838,7 @@ static NSString* kBackgroundFetchingTask = @"im.monal.fetch";
         // No fallback unfortunately
         DDLogError(@"BGTask needed but NOT supported!");
     }
+#endif
 }
 
 -(void) connectIfNecessary
